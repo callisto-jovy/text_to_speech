@@ -1,13 +1,15 @@
-package de.yugata.tts;
+package de.yugata.tts.provider;
+
+import de.yugata.tts.configuration.AbstractTTSConfiguration;
 
 import java.io.File;
 
-public abstract class TTSProvider {
+public abstract class AbstractTTSProvider {
 
     protected static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0";
-    private final TTSConfiguration configuration;
+    protected final AbstractTTSConfiguration configuration;
 
-    public TTSProvider(TTSConfiguration configuration) {
+    public AbstractTTSProvider(AbstractTTSConfiguration configuration) {
         this.configuration = configuration;
     }
 

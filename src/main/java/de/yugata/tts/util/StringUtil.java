@@ -1,43 +1,22 @@
-package de.yugata.bot.util;
+package de.yugata.tts.util;
 
-import java.awt.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringTokenizer;
 
 public class StringUtil {
+
+
+    public static final Gson GSON = new GsonBuilder()
+            .create();
 
     /**
      * Private constructor. Prevent instantiation.
      */
     private StringUtil() {
-    }
-
-    public static List<String> wrap(String txt, FontMetrics fm, int maxWidth) {
-        final StringTokenizer st = new StringTokenizer(txt);
-
-        final List<String> wrappedLines = new ArrayList<>();
-        String line = "";
-        String lineBeforeAppend;
-
-        while (st.hasMoreTokens()) {
-            final String seg = st.nextToken();
-            lineBeforeAppend = line;
-            line += seg + " ";
-            final int width = fm.stringWidth(line);
-
-            if (width > maxWidth) { //new Line.
-                wrappedLines.add(lineBeforeAppend);
-                line = seg + " ";
-            }
-        }
-
-        //the remaining part.
-        if (!line.isEmpty()) {
-            wrappedLines.add(line);
-        }
-        return wrappedLines;
     }
 
     /**

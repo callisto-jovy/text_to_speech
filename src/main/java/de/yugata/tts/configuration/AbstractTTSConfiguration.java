@@ -1,4 +1,18 @@
-package de.yugata.tts;
+package de.yugata.tts.configuration;
 
-public class TTSConfiguration {
+import java.io.File;
+
+public abstract class AbstractTTSConfiguration {
+
+    protected final File ttsDirectory;
+
+
+    public AbstractTTSConfiguration(final File ttsDirectory) {
+        this.ttsDirectory = ttsDirectory;
+    }
+
+
+    public File ttsDirectory() {
+        return ttsDirectory;
+    }
 }

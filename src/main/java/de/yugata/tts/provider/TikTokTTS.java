@@ -1,9 +1,10 @@
-package de.yugata.tts;
+package de.yugata.tts.provider;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import de.yugata.bot.VideoCreator;
-import de.yugata.bot.util.StringUtil;
+import de.yugata.tts.configuration.TikTokConfiguration;
+import de.yugata.tts.util.StringUtil;
+import de.yugata.tts.configuration.AbstractTTSConfiguration;
 
 import java.io.*;
 import java.net.URI;
@@ -15,21 +16,24 @@ import java.util.Base64;
 /**
  * SEE: <a href="https://github.com/oscie57/tiktok-voice/blob/main/main.py">Python tts example</a>
  */
-public class TikTokTTS extends TTSProvider {
+public class TikTokTTS extends AbstractTTSProvider {
 
     private final static String USER_AGENT = "com.zhiliaoapp.musically/2022600030 (Linux; U; Android 7.1.2; es_ES; SM-G988N; Build/NRD90M;tt-ok/3.12.13.1)";
 
-    public TikTokTTS(TTSConfiguration configuration) {
+    private final String apiKey;
+
+    public TikTokTTS(TikTokConfiguration configuration) {
         super(configuration);
+        this.apiKey = configuration.apiKey();
     }
 
     @Override
     public File generateTTS(String content) {
-        if (!VideoCreator.INSTANCE.getConfigHelper().getConfiguration().containsKey("tik_tok_session")) {
-            throw new IllegalStateException("Tik Tok session is null. Please set the key 'tik_tok_session' in the properties.");
+        if (apiKey.isEmpty()) {
+            throw new IllegalStateException("Tik Tok session is null. ");
         }
         try {
-            final File tempFile = File.createTempFile("tiktoktts", "", VideoCreator.TTS_DIRECTORY);
+            final File tempFile = File.createTempFile("tiktoktts", "", configuration.ttsDirectory());
             final FileOutputStream fos = new FileOutputStream(tempFile, true);
 
             final String[] blocks = StringUtil.splitIntoBlocksAtDelimiter(cleanText(content), 200, " ");
