@@ -1,11 +1,11 @@
-package de.yugata.tts;
+package de.yugata.tts.provider;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import de.yugata.bot.VideoCreator;
-import de.yugata.bot.util.StringUtil;
+import de.yugata.tts.configuration.ElevenLabsConfiguration;
+import de.yugata.tts.util.StringUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,31 +16,34 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-import static de.yugata.bot.VideoCreator.GSON;
-import static de.yugata.bot.VideoCreator.TRANSCRIPTS_DIRECTORY;
 
-public class ElevenLabsTTS extends TTSProvider {
+import static de.yugata.tts.util.StringUtil.GSON;
+
+public class ElevenLabsTTS extends AbstractTTSProvider {
 
 
     private static final String VOICES_ENDPOINT = "https://api.elevenlabs.io/v1/voices";
     private static final String TTS_ENDPOINT = "https://api.elevenlabs.io/v1/text-to-speech/";
 
-    public ElevenLabsTTS(TTSConfiguration configuration) {
+    private final String apiKey;
+
+    public ElevenLabsTTS(ElevenLabsConfiguration configuration) {
         super(configuration);
+        // try to grab the api key from the config.
+        this.apiKey = configuration.apiKey();
     }
 
 
     @Override
     public File generateTTS(final String content) {
+        /* generate the tts for the content. */
         try {
-            // generate the tts for the content.
-            // try to grab the api key from the config.
-            final String apiKey = VideoCreator.INSTANCE.getConfigHelper().getConfiguration().getString("elevenlabs.key", "");
+
             //2500 chars is the max for one request with an api key. 250 chars with no api key.
             final String[] blocks = StringUtil.splitIntoBlocksAtDelimiter(content, apiKey.isEmpty() ? 250 : 2500, " ");
 
             // The temporary file created with the audio data.
-            final File tempFile = File.createTempFile("elevenlabstts", ".mp3", TRANSCRIPTS_DIRECTORY);
+            final File tempFile = File.createTempFile("elevenlabstts", ".mp3", configuration.ttsDirectory());
             final FileOutputStream fos = new FileOutputStream(tempFile); // Open a new stream to the temp file in which all the blocks are transferred to.
 
             // Iterate over the blocks, send a post for each, get the inputstream and merge into the main temp file.
@@ -80,8 +83,6 @@ public class ElevenLabsTTS extends TTSProvider {
         payload.addProperty("model_id", "eleven_monolingual_v1");
         // new http client.
         final HttpClient client = HttpClient.newHttpClient();
-        // grab the optional api key.
-        final String apiKey = VideoCreator.INSTANCE.getConfigHelper().getConfiguration().getString("elevenlabs.key", "");
 
         // Create a new builder for the request, so that the api key may be appended to the headers.
         final HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
@@ -99,7 +100,7 @@ public class ElevenLabsTTS extends TTSProvider {
     }
 
     private String getVoiceIdFromName() throws IOException, InterruptedException {
-        final String selectedName = VideoCreator.INSTANCE.getConfigHelper().getConfiguration().getString("elevenlabs.voice", "Rachel");
+        final String selectedName = ((ElevenLabsConfiguration) configuration).ttsVoice();
 
         final HttpClient httpClient = HttpClient.newHttpClient();
         // Create a new builder for the request, so that the api key may be appended to the headers.
@@ -122,6 +123,6 @@ public class ElevenLabsTTS extends TTSProvider {
             }
         }
 
-        return "21m00Tcm4TlvDq8ikWAM"; //"Rachel"
+        return "21m00Tcm4TlvDq8ikWAM"; //Default: "Rachel"
     }
 }

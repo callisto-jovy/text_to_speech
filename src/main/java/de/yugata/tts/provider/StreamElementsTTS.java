@@ -1,5 +1,7 @@
-package de.yugata.tts;
+package de.yugata.tts.provider;
 
+
+import de.yugata.tts.configuration.StreamElementsConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,24 +15,20 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class StreamElementsTTS extends TTSProvider {
-
-    private static final String[] VOICES = {
-            "Joey",
-            "Matthew",
-            "Amy",
-            "Kendra",
-    };
+public class StreamElementsTTS extends AbstractTTSProvider {
 
     private static final String API_ENDPOINT = "https://api.streamelements.com/kappa/v2/speech?";
 
-    public StreamElementsTTS(TTSConfiguration configuration) {
+    private final StreamElementsConfiguration.StreamElementsVoice voice;
+
+    public StreamElementsTTS(StreamElementsConfiguration configuration) {
         super(configuration);
+        this.voice = configuration.voice();
     }
 
     @Override
     public File generateTTS(String content) {
-        final String voice = getRandomVoice();
+        final String voice = getVoice();
 
         try {
             return generateTTS(content, voice);
@@ -66,7 +64,9 @@ public class StreamElementsTTS extends TTSProvider {
     }
 
 
-    private String getRandomVoice() {
-        return VOICES[ThreadLocalRandom.current().nextInt(VOICES.length)];
+    private String getVoice() {
+        return voice == StreamElementsConfiguration.StreamElementsVoice.RANDOM ?
+                StreamElementsConfiguration.StreamElementsVoice.values()[ThreadLocalRandom.current().nextInt(StreamElementsConfiguration.StreamElementsVoice.values().length)].voiceName()
+                : voice.voiceName();
     }
 }
