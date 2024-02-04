@@ -2,6 +2,7 @@ package de.yugata.tts.provider;
 
 
 import de.yugata.tts.configuration.StreamElementsConfiguration;
+import de.yugata.tts.util.ArrayUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +67,7 @@ public class StreamElementsTTS extends AbstractTTSProvider {
 
     private String getVoice() {
         return voice == StreamElementsConfiguration.StreamElementsVoice.RANDOM ?
-                StreamElementsConfiguration.StreamElementsVoice.values()[ThreadLocalRandom.current().nextInt(StreamElementsConfiguration.StreamElementsVoice.values().length)].voiceName()
+                ArrayUtil.getRandomEnumValue(StreamElementsConfiguration.StreamElementsVoice.values()).voiceName()
                 : voice.voiceName();
     }
 }
