@@ -82,7 +82,8 @@ public class TikTokConfiguration extends AbstractTTSConfiguration {
         PROFESSOR("en_us_007"),
         SCIENTIST("en_us_009"),
         CONFIDENCE("en_us_010"),
-        SMOOTH("en_au_002");
+        SMOOTH("en_au_002"),
+        RANDOM("");
 
 
         private final String id;
