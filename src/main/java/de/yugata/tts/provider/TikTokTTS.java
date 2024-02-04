@@ -55,13 +55,12 @@ public class TikTokTTS extends AbstractTTSProvider {
     }
 
     private byte[] sendPost(final String text) {
-        final String speaker = "en_us_006";
 
         final String url = "https://tiktok-tts.weilnet.workers.dev/api/generation";
 
         final JsonObject postJson = new JsonObject();
         postJson.addProperty("text", text);
-        postJson.addProperty("voice", speaker);
+        postJson.addProperty("voice", ((TikTokConfiguration) configuration).voice().getId());
 
         try {
             final HttpClient client = HttpClient.newBuilder().build();
