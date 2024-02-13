@@ -4,9 +4,17 @@ import java.io.File;
 
 public class ElevenLabsConfiguration extends AbstractTTSConfiguration {
 
+    /**
+     * (Optional) API key used for authentication with the ElevenLabs API.
+     * If no API key is set, a daily limit is imposed rather than a monthly limit
+     * as determined by the user's ElevenLabs API plan.
+     */
     private String apiKey;
-    private String ttsVoice;
 
+    /**
+     * The TTS voice for ElevenLabs to use.
+     */
+    private String ttsVoice;
 
     public ElevenLabsConfiguration(File ttsDirectory) {
         super(ttsDirectory);

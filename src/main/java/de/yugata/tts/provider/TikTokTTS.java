@@ -29,14 +29,14 @@ public class TikTokTTS extends AbstractTTSProvider {
 
     public TikTokTTS(TikTokConfiguration configuration) {
         super(configuration);
-        this.apiKey = configuration.apiKey();
+        this.apiKey = configuration.tikTokSession();
         this.voice = getVoice(configuration.voice());
     }
 
     @Override
     public Optional<File> generateTTS(String content) {
         if (apiKey == null || apiKey.isEmpty()) {
-            LOGGER.warn("Tik Tok Session is null or API key is empty. Please set a valid session id.");
+            LOGGER.warn("Tik Tok Session is null or session is empty. Please set a valid session id.");
             return Optional.empty();
         }
 

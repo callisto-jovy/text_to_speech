@@ -35,7 +35,7 @@ public abstract class AbstractTTSProvider {
      * Generates tts-files for a given content.
      *
      * @param content the content-string to tts.
-     * @return the temporary file generated.
+     * @return the temporary file generated wrapped in an {@link Optional}. The optional is empty if an exception has been thrown down the line.
      */
     public abstract Optional<File> generateTTS(final String content);
 
