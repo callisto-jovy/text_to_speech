@@ -42,37 +42,63 @@ public class StringUtil {
 
     /**
      * Splits a given string into blocks which are a maximum given length.
-     * The given delimiter is used to identify the last occurrence's index at which a new block is started.
+     * The method tries to split the string in a way, in which sentences are preserved,
+     * i.e. the string is split at colons, commas & lastly - if no other option is possible -
      *
      * @param string    the string to split.
      * @param blockSize the maximum size one block might have.
-     * @param delimiter the delimiter at which the blocks are split.
      * @return an array of the generated blocks.
      */
-    public static String[] splitIntoBlocksAtDelimiter(final String string, final int blockSize, final String delimiter) {
-        final List<String> blocks = new ArrayList<>();
+    public static String[] splitSentences(String string, final int blockSize) {
+        // Clear the string of newlines & control characters
+        string = string.replaceAll("[\\p{C}\\r\\n\\t]", "");
+
+        final List<String> blocks = new ArrayList<>((int) Math.ceil((float) string.length() / blockSize)); // Rough estimate
+        final String[] delimiters = {",", "."};
 
         // String builder to add characters to and reset.
-        StringBuilder builder = new StringBuilder();
+        StringBuilder sentenceBuffer = new StringBuilder(blockSize);
         // iterate over the string with two variables:
         // (i) => index in the string
         // (j) => length of the current block
         for (int i = 0, j = 0; i < string.length(); i++, j++) {
             // A new block has to be created.
             if (j >= blockSize) {
-                // Search for the next closest delimiter
-                final int lastDelimiter = string.lastIndexOf(delimiter, i);
+                // Search for the next closest delimiter (backwards)
+                int lastDelimiter = findClosestLastDelimiter(string, i, delimiters);
+                int lastBuilderDelimiter = findClosestLastDelimiter(sentenceBuffer.toString(), sentenceBuffer.length(), delimiters);
+
+                // no next sentence / subsequence is available, backtrack to the last "word" bound, e.g. space
+                if (lastDelimiter == -1 || lastBuilderDelimiter == -1) {
+                    lastDelimiter = string.lastIndexOf(" ", i);
+                    lastBuilderDelimiter = sentenceBuffer.lastIndexOf(" ");
+                }
+
                 // Add the builder (as a substring till the last delimiter in the builder)
-                blocks.add(builder.substring(0, builder.lastIndexOf(delimiter)));
+                blocks.add(sentenceBuffer.substring(0, lastBuilderDelimiter));
 
                 i = lastDelimiter + 1; // Backtrack to the position after the last delimiter.
                 j = 0; //Reset j
-                builder = new StringBuilder();
+                sentenceBuffer.setLength(0); // Reset the buffer
             }
-            builder.append(string.charAt(i));
+            sentenceBuffer.append(string.charAt(i));
         }
         // Add the remaining characters.
-        blocks.add(builder.toString());
+        blocks.add(sentenceBuffer.toString());
+
         return blocks.toArray(String[]::new);
+    }
+
+    private static int findClosestLastDelimiter(final String input, int fromIndex, final String... delimiters) {
+        int closestIndex = -1;
+
+        for (final String test : delimiters) {
+            final int result = input.lastIndexOf(test, fromIndex);
+
+            if (result != -1 && result >= closestIndex) {
+                closestIndex = result;
+            }
+        }
+        return closestIndex;
     }
 }
