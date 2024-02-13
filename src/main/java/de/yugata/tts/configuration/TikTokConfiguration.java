@@ -4,9 +4,25 @@ import java.io.File;
 
 public class TikTokConfiguration extends AbstractTTSConfiguration {
 
+    /**
+     * Required session id for the TikTok TTS API to function.
+     * For details on how to grab the session id:
+     * <br>
+     * TikTok Session ID
+     * These seem to expire randomly after an arbritrary amount of time, sometimes sooner than the time they are valid for.
+     * You'll need to update this every time it expires until a better solution is found.
+     * To do this you will need to:
+     * <li> 1. Login to TikTok in your web browser
+     * <li> 2. Look for a cookie named "sessionid" - you may wish to use the Cookie Editor extension (<a href="https://cookie-editor.cgagnier.ca">Cookie-editor</a>) for your browser to do this.
+     * <li> 3. Copy and paste the value below
+     */
     private String tikTokSession;
-    private TikTokVoice voice = TikTokVoice.MALE_DEFAULT_US;
 
+    /**
+     * The voice for the {@link de.yugata.tts.provider.StreamElementsTTS} provider to use.
+     * Defaults to a {@link TikTokVoice.MALE_DEFAULT_US}.
+     */
+    private TikTokVoice voice = TikTokVoice.MALE_DEFAULT_US;
 
     public TikTokVoice voice() {
         return voice;
@@ -26,7 +42,7 @@ public class TikTokConfiguration extends AbstractTTSConfiguration {
         return this;
     }
 
-    public String apiKey() {
+    public String tikTokSession() {
         return tikTokSession;
     }
 
