@@ -40,7 +40,7 @@ public class ElevenLabsTTS extends AbstractTTSProvider {
         try {
 
             //2500 chars is the max for one request with an api key. 250 chars with no api key.
-            final String[] blocks = StringUtil.splitIntoBlocksAtDelimiter(content, apiKey.isEmpty() ? 250 : 2500, " ");
+            final String[] blocks = StringUtil.splitSentences(content, apiKey.isEmpty() ? 250 : 2500);
 
             // The temporary file created with the audio data.
             final File tempFile = File.createTempFile("elevenlabstts", ".mp3", configuration.ttsDirectory());

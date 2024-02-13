@@ -39,7 +39,7 @@ public class TikTokTTS extends AbstractTTSProvider {
             final File tempFile = File.createTempFile("tiktoktts", ".mp3", configuration.ttsDirectory());
             final FileOutputStream fos = new FileOutputStream(tempFile, true);
 
-            final String[] blocks = StringUtil.splitIntoBlocksAtDelimiter(cleanText(content), 200, " ");
+            final String[] blocks = StringUtil.splitSentences(cleanText(content), 200);
 
             for (final String block : blocks) {
                 final byte[] data = sendPost(block);
