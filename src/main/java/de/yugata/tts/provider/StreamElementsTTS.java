@@ -15,10 +15,22 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * StreamElements
+ * <p>
+ * Supports most (but not all) Polly voices that use the 'standard' engine.
+ * Voices that only exist in their 'neural' engine will not work.
+ * In addition to Polly, StreamElements also makes use of many Google Cloud Text-to-Speech
+ * voices, include their neural "WaveNet" ones.
+ * Finally, there is a third section of voices whose IDs are merely a name. These are perhaps
+ * custom voices created using Google's premium tier Text-to-Speech platform.
+ * <p>
+ * The full list of Polly voices can be found: <a href="https://docs.aws.amazon.com/polly/latest/dg/voicelist.html">here</a>
+ * <p>
+ * The full list of Google voices can be found: <a href="https://cloud.google.com/text-to-speech/docs/voices">here</a>
+ */
 public class StreamElementsTTS extends AbstractTTSProvider {
 
     /**
@@ -26,6 +38,9 @@ public class StreamElementsTTS extends AbstractTTSProvider {
      */
     private static final String API_ENDPOINT = "https://api.streamelements.com/kappa/v2/speech?";
 
+    /**
+     * The voice id that will be used for generation.
+     */
     private final String voice;
 
     public StreamElementsTTS(StreamElementsConfiguration configuration) {
@@ -39,7 +54,7 @@ public class StreamElementsTTS extends AbstractTTSProvider {
         try {
             // Stream elements has a character limit of 3000 chars (see the README of https://github.com/chrisjp/tts)
 
-            final File tempFile = File.createTempFile("tiktoktts", ".mp3", configuration.ttsDirectory());
+            final File tempFile = File.createTempFile("streamelements", ".mp3", configuration.ttsDirectory());
             final FileOutputStream fos = new FileOutputStream(tempFile, true);
 
             final String[] blocks = StringUtil.splitSentences(content, 3000);
