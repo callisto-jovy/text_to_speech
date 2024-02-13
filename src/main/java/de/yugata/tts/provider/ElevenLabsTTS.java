@@ -7,7 +7,6 @@ import com.google.gson.JsonParser;
 import de.yugata.tts.configuration.ElevenLabsConfiguration;
 import de.yugata.tts.util.StringUtil;
 
-import javax.imageio.stream.FileImageOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,7 +16,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Optional;
-
 
 import static de.yugata.tts.util.StringUtil.GSON;
 
@@ -38,15 +36,16 @@ public class ElevenLabsTTS extends AbstractTTSProvider {
 
     @Override
     public Optional<File> generateTTS(final String content) {
-        /* generate the tts for the content. */
         try {
             // 2500 chars is the max for one request with an api key. 250 chars with no api key.
             final String[] blocks = StringUtil.splitSentences(content, apiKey.isEmpty() ? 250 : 2500);
 
             // The temporary file created with the audio data.
             final File tempFile = File.createTempFile("elevenlabstts", ".mp3", configuration.ttsDirectory());
-            final FileOutputStream fos = new FileOutputStream(tempFile); // Open a new stream to the temp file in which all the blocks are transferred to.
+            final FileOutputStream fos = new FileOutputStream(tempFile, true); // Open a new stream to the temp file in which all the blocks are transferred to.
 
+            // Send a new post request to the api for each of the blocks
+            // hand off the FileOutputStream
             for (final String block : blocks) {
                 sendPost(block, fos);
             }
