@@ -9,6 +9,9 @@ import java.util.List;
 
 public class StringUtil {
 
+    public static final String URL_PATTERN = "((http|https)\\:\\/\\/)?[a-zA-Z0-9\\.\\/\\?\\:@\\-_=#]+\\.([a-zA-Z]){2,6}([a-zA-Z0-9\\.\\&\\/\\?\\:@\\-_=#])*";
+
+    public static final String CLEAR_EXP = "\\s['|’]|['|’]\\s|[\\^_~@!&;#:\\-%—“”‘\\\"%\\*/{}\\[\\]\\(\\)\\\\|<>=+]";
 
     public static final Gson GSON = new GsonBuilder()
             .create();
@@ -17,6 +20,21 @@ public class StringUtil {
      * Private constructor. Prevent instantiation.
      */
     private StringUtil() {
+    }
+
+
+    /**
+     * Sanitizes the text, removes URLs & runs a clear regex.
+     *
+     * @param text the text to sanitize.
+     * @return the text with replaced characters.
+     */
+    public static String sanitizeText(final String text) {
+        return text
+                .replaceAll(URL_PATTERN, " ")
+                .replaceAll(CLEAR_EXP, " ")
+                .replace("+", "plus")
+                .replace("&", "and");
     }
 
     /**
@@ -43,7 +61,7 @@ public class StringUtil {
     /**
      * Splits a given string into blocks which are a maximum given length.
      * The method tries to split the string in a way, in which sentences are preserved,
-     * i.e. the string is split at colons, commas & lastly - if no other option is possible -
+     * i.e. the string is split at colons, commas & lastly - if no other option is possible - spaces
      *
      * @param string    the string to split.
      * @param blockSize the maximum size one block might have.
@@ -51,7 +69,9 @@ public class StringUtil {
      */
     public static String[] splitSentences(String string, final int blockSize) {
         // Clear the string of newlines & control characters
-        string = string.replaceAll("[\\p{C}\\r\\n\\t]", "");
+        string = string.replaceAll("[\\p{C}\\r\\n]", "");
+        // Add spaces where no spaces are.
+        string = sanitizeText(string);
 
         final List<String> blocks = new ArrayList<>((int) Math.ceil((float) string.length() / blockSize)); // Rough estimate
         final String[] delimiters = {",", "."};
