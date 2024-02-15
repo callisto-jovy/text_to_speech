@@ -77,7 +77,7 @@ public class StringUtil {
         final String[] delimiters = {",", "."};
 
         // String builder to add characters to and reset.
-        StringBuilder sentenceBuffer = new StringBuilder(blockSize);
+        final StringBuilder sentenceBuffer = new StringBuilder(blockSize);
         // iterate over the string with two variables:
         // (i) => index in the string
         // (j) => length of the current block
