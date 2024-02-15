@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class StringUtil {
 
@@ -74,7 +75,7 @@ public class StringUtil {
         string = sanitizeText(string);
 
         final List<String> blocks = new ArrayList<>((int) Math.ceil((float) string.length() / blockSize)); // Rough estimate
-        final String[] delimiters = {",", "."};
+        final String[] delimiters = {",", ".", "!", "?"};
 
         // String builder to add characters to and reset.
         final StringBuilder sentenceBuffer = new StringBuilder(blockSize);
