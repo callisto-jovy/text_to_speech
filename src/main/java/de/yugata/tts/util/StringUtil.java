@@ -69,7 +69,7 @@ public class StringUtil {
      */
     public static String[] splitSentences(String string, final int blockSize) {
         // Clear the string of newlines & control characters
-        string = string.replaceAll("[\\p{C}\\r\\n]", "");
+        string = string.replaceAll("\\p{C}", " ");
         // Add spaces where no spaces are.
         string = sanitizeText(string);
 
